@@ -42,6 +42,11 @@ public class CartItem {
         quantity += extra;
     }
 
+    // used when the quantity is reduced to the stock
+    void setQuantity(int newQuantity) {
+        quantity = newQuantity;
+    }
+
     // price x quantity
     public double getSubtotal() {
         return price * quantity;

@@ -83,6 +83,7 @@ public class StoreFrame extends JFrame {
     }
 
     private void openCart() {
+        cart.limitToStock(); // a quantity larger than the stock is reduced to the stock
         if (cartFrame == null || !cartFrame.isDisplayable()) {
             cartFrame = new CartFrame(cart);
             cartFrame.setVisible(true);

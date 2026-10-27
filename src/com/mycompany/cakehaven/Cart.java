@@ -61,19 +61,25 @@ public class Cart implements ProductSelectionListener {
         }
 
         CartItem existing = find(product.getId());
-        // the cart can't hold more than the stock (counting what is already in the cart)
-        int inCart = 0;
-        if (existing != null) {
-            inCart = existing.getQuantity();
-        }
-        if (inCart + quantity > product.getAvailableStock()) {
-            throw new IllegalArgumentException("you already have " + inCart + " in the cart and only "
-                    + product.getAvailableStock() + " are in stock.");
-        }
         if (existing != null) {
             existing.addQuantity(quantity);
         } else {
             items.add(new CartItem(product.getId(), product.getName(), product.getPrice(), quantity));
+        }
+        fireCartChanged();
+    }
+
+    /**
+     * Called when the user clicks the Cart button.
+     * Checks the stock of every item: if the quantity in the cart is larger than the stock,
+     * it is reduced to the stock (no message to the user). Smaller quantities are not changed.
+     */
+    public void limitToStock() {
+        for (CartItem item : items) {
+            Product product = repository.findById(item.getProductId());
+            if (product != null && item.getQuantity() > product.getAvailableStock()) {
+                item.setQuantity(product.getAvailableStock());
+            }
         }
         fireCartChanged();
     }
